@@ -4,8 +4,8 @@
 #include "list.h"
 
 struct graph{
-  int nv, ne; // numero vertici e numero nodi
-  struct list_node *vertexes; // lista di vertici
+  int nv, ne; // numero vertici e numero archi
+  struct vertex *vertexes; // lista di vertici
   struct bst_node *bst;
 };
 
@@ -13,10 +13,11 @@ struct vertex{
   int visited; //TODO maybe a Bool type?
   struct user *user; // puntatore al dato
   struct edge *edge; // lista di adiacenza
+  struct vertex *next;
 };
 
 struct edge{
-  int value; // label arco
+  int value; // etichetta arco
   struct vertex *vertex; // puntatore al nodo adiacente
   struct edge *next; // prossimo arco
 };

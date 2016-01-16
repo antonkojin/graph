@@ -26,7 +26,8 @@ struct vertex* insert_vertex(struct graph* g, struct user* user){
     v->user = user;
     g->nv++;
     v->edge = NULL;
-    g->vertexes = list_append(g->vertexes, v);
+    v->next = g->vertexes;
+    g->vertexes = v;
     bst_insert(&g->bst, v);
   }else{
     //TODO print error
@@ -75,34 +76,34 @@ struct list_node* depth_first_visit( struct vertex *v, int year){
 
 struct list_node* connected_components(struct graph *g, int year){
   struct list_node* connected_components = NULL;
-  struct list_node *list_vertex = g->vertexes;
+  struct vertex *v = g->vertexes;
   /* nuke visited flag for all users */
-  while(list_vertex){
-    ( (struct vertex*)(list_vertex->item) )->visited = 0;
-    list_vertex = list_vertex->next;
+  while(v){
+    v->visited = 0;
+    v = v->next;
   }
   /* search connected components */
-  list_vertex = g->vertexes;
-  while(list_vertex){
-    if( !( ( (struct vertex*)(list_vertex->item) )->visited ) ){
-      connected_components = list_append(connected_components, depth_first_visit((struct vertex*)(list_vertex->item), year));
+  v = g->vertexes;
+  while(v){
+    if( !v->visited ){
+      connected_components = list_append( connected_components, depth_first_visit(v, year) );
     }
-    list_vertex = list_vertex->next;
+    v = v->next;
   }
   return connected_components;
 }
 
 void graph_print(struct graph *g){
-  struct list_node *list_vertexes = g->vertexes;
+  struct vertex *v = g->vertexes;
   struct edge *edges;
-  while(list_vertexes){
-    printf("%d", ( (struct vertex*)(list_vertexes->item) )->user->id );
-    edges = ( (struct vertex*)(list_vertexes->item) )->edge;
+  while(v){
+    printf("%d", v->user->id );
+    edges = v->edge;
     while(edges){
       printf(" -> %d", edges->vertex->user->id);
       edges = edges->next;
     }
     printf("\n");
-    list_vertexes = list_vertexes->next;
+    v = v->next;
   }
 }

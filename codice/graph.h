@@ -1,8 +1,6 @@
 #ifndef GRAPH_H
 #define GRAPH_H
 
-#include "list.h"
-
 struct graph{
   int nv, ne; // numero vertici e numero archi
   struct vertex *vertexes; // lista di vertici
@@ -13,7 +11,7 @@ struct vertex{
   int visited; //TODO maybe a Bool type?
   struct user *user; // puntatore al dato
   struct edge *edge; // lista di adiacenza
-  struct vertex *next;
+  struct vertex *next; // prossimo nella lista di vertici
 };
 
 struct edge{

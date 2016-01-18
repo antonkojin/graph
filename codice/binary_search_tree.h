@@ -7,7 +7,7 @@ struct bst_node{
 };
 
 
-struct vertex* bst_search(struct bst_node *bst, int id);
-void bst_insert(struct bst_node **bst, struct vertex *v);
+struct vertex *bst_search(struct bst_node *bst, int id);
+struct bst_node *bst_insert(struct bst_node *root, struct vertex *v);
 
 #endif

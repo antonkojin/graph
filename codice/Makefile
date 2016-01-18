@@ -1,7 +1,7 @@
 CC=gcc
 CFLAGS=-c -Wall
 LDFLAGS=
-SOURCES=facebook.c graph.c list.c binary_search_tree.c user.c
+SOURCES=facebook.c graph.c list.c binary_search_tree.c user.c malloc_check.c
 OBJECTS=$(SOURCES:.c=.o)
 EXECUTABLE=facebook
 

@@ -5,6 +5,8 @@
 #include "graph.h"
 #include "user.h"
 #include "binary_search_tree.h"
+#include "list.h"
+#include "malloc_check.h"
 
 #define STRING_BUFFER_MAX 21
 #define menu \
@@ -58,33 +60,23 @@ void inserisci_utente(struct graph *g){
   int id;
   char *nome, *cognome, string_buffer[STRING_BUFFER_MAX] = {0};
   struct user *u;
+  fprintf(stderr, "DEBUG: inserisci_utente: start\n");
   printf("nome: ");
   scanf(" %s", string_buffer);
-  nome = (char*)calloc( strlen(string_buffer) + 1, sizeof(char) );
-  if(!nome){ //TODO my_calloc & my_malloc
-    fprintf(stderr, "OUT OF MEMORY ERROR");
-    exit(EXIT_FAILURE);
-  }
+  nome = (char*)calloc_check( strlen(string_buffer) + 1, sizeof(char) );
   strcpy(nome, string_buffer);
   printf("cognome: ");
   scanf(" %s", string_buffer);
-  cognome = (char*)calloc( strlen(string_buffer) + 1, sizeof(char) );
-  if(!cognome){
-    fprintf(stderr, "OUT OF MEMORY ERROR");
-    exit(EXIT_FAILURE);
-  }
+  cognome = (char*)calloc_check( strlen(string_buffer) + 1, sizeof(char) );
   strcpy(cognome, string_buffer);
   printf("id: ");
   scanf(" %d", &id);
-  u = (struct user*)malloc(sizeof(struct user));
-  if(!u){
-    fprintf(stderr, "OUT OF MEMORY ERROR");
-    exit(EXIT_FAILURE);
-  }
+  u = (struct user*)malloc_check(sizeof(struct user));
   u->nome = nome;
   u->cognome = cognome;
   u->id = id;
   insert_vertex(g, u);
+  fprintf(stderr, "DEBUG: inserisci_utente: end\n");
 }
 
 void cerca_utente(struct graph *g){
@@ -95,15 +87,16 @@ void cerca_utente(struct graph *g){
   */
   struct user *u;
   int id;
+  fprintf(stderr, "DEBUG: cerca_utente: start\n");
   printf("id: ");
   scanf("%d", &id);
   u = bst_search(g->bst, id)->user;
   if(u){
-    //TODO magari stampare sempre una riga vuota prima di ogni output
     printf("%s %s %d\n", u->nome, u->cognome, u->id);
   }else{
     printf("Utente non trovato");
   }
+  fprintf(stderr, "DEBUG: cerca_utente: end\n");
 }
 
 void inserisci_amicizia(struct graph *g){
@@ -113,6 +106,7 @@ void inserisci_amicizia(struct graph *g){
   altrimenti stampa "Utente X non presente" oppure "Utenti X, Y non presenti"
   */
   int id1, id2, anno;
+  fprintf(stderr, "DEBUG: inserisci_amicizia: start\n");
   printf("id utente: ");
   scanf("%d", &id1);
   printf("id altro utente: ");
@@ -121,8 +115,10 @@ void inserisci_amicizia(struct graph *g){
     printf("E' lo stesso utente");
     return;
   }
+  printf("anno: ");
   scanf("%d", &anno);
   graph_insert_edge(g, id1, id2, anno);
+  fprintf(stderr, "DEBUG: inserisci_amicizia: end\n");
 }
 
 void gruppi(struct graph *g, int year){

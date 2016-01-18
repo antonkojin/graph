@@ -4,6 +4,7 @@
 #include "graph.h"
 #include "list.h"
 #include "binary_search_tree.h"
+#include "malloc_check.h"
 
 struct graph* graph_new(){
   struct graph *g = (struct graph*)malloc( sizeof(struct graph) );
@@ -16,22 +17,20 @@ struct graph* graph_new(){
 void graph_destroy();
 
 struct vertex* insert_vertex(struct graph* g, struct user* user){
+  fprintf(stderr, "DEBUG: insert_vertex: start\n");
   struct vertex* v = NULL;
   if( !bst_search(g->bst, user->id) ){
-    v = (struct vertex*)malloc( sizeof(struct vertex) );
-    if(!v){
-      fprintf(stderr, "OUT OF MEMORY ERROR");
-      exit(EXIT_FAILURE);
-    }
+    v = (struct vertex*)malloc_check( sizeof(struct vertex) );
     v->user = user;
     g->nv++;
     v->edge = NULL;
     v->next = g->vertexes;
     g->vertexes = v;
-    bst_insert(&g->bst, v);
+    g->bst = bst_insert(g->bst, v);
   }else{
     //TODO print error
   }
+  fprintf(stderr, "DEBUG: insert_vertex: end\n");
   return v;
 }
 

@@ -5,6 +5,14 @@
 \usepackage[italian]{babel}
 \usepackage{listings}
 \usepackage{color}
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks,
+  citecolor = black,
+  filecolor = black,
+  linkcolor = black,
+  urlcolor = black
+}
 
 \definecolor{mygreen}{rgb}{0,0.6,0}
 \definecolor{mygray}{rgb}{0.5,0.5,0.5}
@@ -42,14 +50,13 @@
 \author{ Anton Kozhin }
 \date{\today}
 \maketitle
-
+\tableofcontents
 \section{Strutture dati e algoritmi}
-Ho deciso di rappresentare gli utenti come nodi di un grafo non orientato e
+Rappresento gli utenti come nodi di un grafo non orientato e
 le relazioni di amicizia come archi del grafo.
-È la rappresentazione più naturale per delle relazioni.
 Un albero binario di ricerca %albero 2-3 ???
 per trovare un utente dato il suo
-identificativo. Strutture alternative per la ricerca potrebbero essere: tabella hash, efficiente ma inadatta per insiemi di dimensione variabile dato che si dovrebbe ridimensionare la tabella; albero 2-3, più efficiente nel caso peggiore, 
+identificativo.
 L'algoritmo per la ricerca di gruppo di amici è la ricerca di componenti connesse del grafo.
 \subsection{Grafo Utenti}
 Facebook è composto da utenti e la relazione di amicizia tra due utenti. Una naturale rappresentazione delle relazioni è il grafo. Quindi facebook verrà rappresentato da un grafo non orientato e la relazione di amicizia come l'arco tra due vertici del grafo.
@@ -73,9 +80,9 @@ aggiungi_vertice($G = (V,E)$, $v$):
     stampa errore
   return $G$
 \end{lstlisting}
-Una stima della complesssita computazionale col criterio uniforme.
+Una stima della complessita computazionale col criterio uniforme.
 Per verificare se $v \notin V$ faccio una ricerca nell'albero, ci si impiega $O(\log_{2}n)$ nel caso medio, dove $n$ è il numero di vertici nel grafo.
-Il tempo per aggiungere $v$ all'insieme dei vertici $V$ è costante, si tratta di appenderlo in testa alla lista dei gertici di $G$.
+Il tempo per aggiungere $v$ all'insieme dei vertici $V$ è costante, si tratta di appenderlo in testa alla lista dei vertici di $G$.
 Il tempo per inserire $v$ nell'albero di ricerca è anche lui logarimico.
 \[
 T_{aggiungi\_vertice} = O(\log_{2}n) + O(1) + O(\log_{2}n) = O(\log_{2}n)
@@ -92,15 +99,16 @@ inserisci_amicizia($G=(V,E)$, id$_1$, id$_2$, valore)
 \end{lstlisting}
 \lstinline{ricerca_utente} costa $O(\log_{2}n)$. \lstinline{list_append} ha costo $O(1)$, è un inserimento in testa a una lista.
 \[
-  T_{inserisci\_amicizia} = 2 O(\log_{2}n) + 2O(1) = O(\log_{2}n)
+  T_{inserisci\_amicizia} = 2\times O(\log_{2}n) + 2\times O(1) = O(\log_{2}n)
 \]
 \subsection{Albero binario di ricerca Utenti}
 Ho implementato l'albero binario di ricerca per cercare un utente dato il suo identificativo. Altrimenti avrei dovuto cercare l'utente nella lista dei vertici, col costo di $O(n)$.
+Strutture alternative per la ricerca potrebbero essere: tabella hash, efficiente ma inadatta per insiemi di dimensione variabile dato che si dovrebbe ridimensionare la tabella; albero 2-3, più efficiente nel caso peggiore, ma richiederebbe uno spazio maggiore per allocare la struttura.
 \lstinputlisting[language=C, firstline=4, lastline=7]{../codice/binary_search_tree.h}
 
 \subsubsection{Ricerca utente}
 L'operazione di ricerca di un utente si traduce in una ricerca del suo identificativo nell'albero binario di ricerca (d'ora in poi \lstinline{BST}).
-La funzione \lstinline{id} restituisce l'identificativo relativo all'utente rappresentato dal nodo. La funzione \lstinline{dato} restituisce il dato a cui punta il nodo, in questo caso l'utente.
+L'operatore \lstinline{id}restituisce l'identificativo relativo all'utente rappresentato dal nodo. La funzione \lstinline{dato} restituisce il dato a cui punta il nodo, in questo caso l'utente.
 Banalmente le funzioni \lstinline{figlio_destro} e \lstinline{figlio_sinistro} restituiscono rispettivamente il figlio destro o sinistro del nodo.
 \begin{lstlisting}[mathescape]
 ricerca_utente(root, id_utente)
@@ -113,7 +121,7 @@ ricerca_utente(root, id_utente)
   else
     return ricerca_utente(figlio_destro(root), id_utente)
 \end{lstlisting}
-Questa procedura ricorsiva trova un utente in tempo $O(h)$ dove $h = \log_{2}n$ è l'altezza dell'albero, se supponiamo che l'albero sia bilanciato, cioè gli utenti inseriti in ordine sparso.
+Questa procedura ricorsiva trova un utente in tempo $O(h)$ dove $h = \log_{2}(n)$ è l'altezza dell'albero, se supponiamo che l'albero sia bilanciato, cioè gli utenti inseriti in ordine sparso.
 Tuttavia, nel caso peggiore, cioè se gli utenti sono inseriti in ordine crescente o decrescente di identificativo, l'albero degenera in una lista concatenata, e quindi la ricerca impiega $O(|V|)$.
 \[
   T_{ricerca\_utente}^{medio}(n) = O(\log_{2}n)
@@ -138,7 +146,7 @@ inserisci_nodo(root, elemento):
     else
       inserisci_nodo( figlio_destro(root), elemento )
 \end{lstlisting}
-Per questa procedura valgono le stesse considerazoni della rocedura \lstinline{ricerca_utente} presentata sopra.
+Per questa procedura valgono le stesse considerazoni fatte per \lstinline{ricerca_utente} presentata sopra.
 \[
   T_{inserisci\_nodo}^{medio}(n) = O(\log_{2}n)
 \]
@@ -174,10 +182,10 @@ Si ricorda inoltre che il costo complessivo delle chiamate a \lstinline{profondi
   T_{componenti\_connesse} = O(|V|) + \sum_{v \in V}{T_{profondità}(v)} = O(|V|) + \sum_{v \in V}{|L(v)|} = O(|V| +|E|)
 \]
 
-Per trovare i gruppi di amici tale che ogni amicizia è stata instaurata dopo un certo anno, modifico la procedurà profondità nel modo seguente.
+Per trovare i gruppi di amici tale che ogni amicizia è stata instaurata a partire da un certo anno, modifico la procedurà \lstinline{profondità} nel modo seguente.
 \begin{lstlisting}[mathescape]
-profondità($v$)
-  list_append( componente, $v$, anno)
+profondità($v$, anno)
+  list_append( componente, $v$)
   $M(v)$ := true
   for each $w \in L(v)$
     if $M(w)$ = false $\land$ val($v, w$) >= anno
@@ -186,6 +194,4 @@ profondità($v$)
 Dove con \lstinline[mathescape]{val($v, w$)} si intende il valore associato all'arco $(v, w)$
 Questa condizione aggiuntiva non altera la stima della complessità  che rimane $O(|V| + |E|)$.
 
-%-------------------------------------
-\section{Conclusion}
 \end{document}

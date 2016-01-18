@@ -58,15 +58,15 @@ void graph_insert_edge(struct graph *g, int id1, int id2, int value){
   }
 }
 
-struct list_node* depth_first_visit( struct vertex *v, int year){
-  struct list_node *users = NULL;
+struct list_node* depth_first_visit(struct list_node *users, struct vertex *v, int year){
+  // struct list_node *users = NULL;
   struct edge *adj;
   users = list_append(users, v->user);
   v->visited = 1;
   adj = v->edge;
   while(adj){ // for each adjacent vertex to v
     if( !(adj->vertex->visited) && adj->value >= year ){
-      users = list_merge(users, depth_first_visit(adj->vertex, year));
+      users = depth_first_visit(users, adj->vertex, year);
     }
     adj = adj->next;
   }
@@ -85,7 +85,7 @@ struct list_node* connected_components(struct graph *g, int year){
   v = g->vertexes;
   while(v){
     if( !v->visited ){
-      connected_components = list_append( connected_components, depth_first_visit(v, year) );
+      connected_components = list_append( connected_components, depth_first_visit(NULL, v, year) );
     }
     v = v->next;
   }

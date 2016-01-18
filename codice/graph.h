@@ -24,7 +24,7 @@ struct graph* graph_new();
 void graph_destroy();
 struct vertex* insert_vertex(struct graph *g, struct user *user);
 void graph_insert_edge(struct graph *g, int id1, int id2, int value);
-struct list_node* depth_first_visit( struct vertex *v, int year);
+struct list_node* depth_first_visit(struct list_node *users, struct vertex *v, int year);
 struct list_node* connected_components(struct graph *g, int year);
 void graph_print(struct graph *g);
 

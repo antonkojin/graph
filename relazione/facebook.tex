@@ -43,18 +43,16 @@
 \date{\today}
 \maketitle
 
-\section{Introduzione}
-Il progetto consiste nel
-
 \section{Strutture dati e algoritmi}
 Ho deciso di rappresentare gli utenti come nodi di un grafo non orientato e
 le relazioni di amicizia come archi del grafo.
+È la rappresentazione più naturale per delle relazioni.
 Un albero binario di ricerca %albero 2-3 ???
 per trovare un utente dato il suo
-identificativo.
-L'algoritmo per la ricerca di gruppo di amici è la ricerca di componenti connesse.
+identificativo. Strutture alternative per la ricerca potrebbero essere: tabella hash, efficiente ma inadatta per insiemi di dimensione variabile dato che si dovrebbe ridimensionare la tabella; albero 2-3, più efficiente nel caso peggiore, 
+L'algoritmo per la ricerca di gruppo di amici è la ricerca di componenti connesse del grafo.
 \subsection{Grafo Utenti}
-Facebook è composto da utenti e la relazione di amicizia tra due utenti. Una naturale rappresentazione delle relazioni è il grafo. Quindi facebook verrà rappresentato da un grafo non orientato e la relazione di amicizia come l'arco tra due vertici del grafo.
+Facebook è composto da utenti e la relazione di amicizia tra due utenti. Una naturale rappresentazione delle relazioni è il grafo. Quindi facebook verrà rappresentato da un grafo non orientato e la relazione di amicizia come l'arco tra due vertici del grafo.
 
 Rappresento gli archi con una lista di adiacenza, supponendo che il grafo sia poco connesso, visto che non tutti sono amici di tutti. Ho bisogno di una struttura dati composta per l'arco (\lstinline{edge}), poichè voglio memorizzare anche l'anno in cui si crea l'amicizia.
 \lstinputlisting[language=C, firstline=17, lastline=22]{../codice/graph.h}
@@ -75,25 +73,29 @@ aggiungi_vertice($G = (V,E)$, $v$):
     stampa errore
   return $G$
 \end{lstlisting}
-Una stima della complesssità computazionale col criterio uniforme.
+Una stima della complesssita computazionale col criterio uniforme.
 Per verificare se $v \notin V$ faccio una ricerca nell'albero, ci si impiega $O(\log_{2}n)$ nel caso medio, dove $n$ è il numero di vertici nel grafo.
-Il tempo per aggiungere $v$ all'insieme dei vertici $V$ è costante, si tratta di appenderlo in testa alla lista dei gertici di $G$
+Il tempo per aggiungere $v$ all'insieme dei vertici $V$ è costante, si tratta di appenderlo in testa alla lista dei gertici di $G$.
 Il tempo per inserire $v$ nell'albero di ricerca è anche lui logarimico.
 \[
 T_{aggiungi\_vertice} = O(\log_{2}n) + O(1) + O(\log_{2}n) = O(\log_{2}n)
 \]
 
 \subsubsection{Inserimento amicizia}
-La seguente procedura ha come argomenti un grafo $G$ con il suo \lstinline{BST}, gli identificativi di due utenti \lstinline{id_u1} e \lstinline{id_u2} e il \lstinline{valore} da assegnare all'arco che colleghera i due vertici relativi ai due utenti.
+La seguente procedura ha come argomenti un grafo $G$, gli identificativi di due utenti \lstinline{id_u1} e \lstinline{id_u2} e il \lstinline{valore} da assegnare all'arco che colleghera i due vertici relativi ai due utenti. \lstinline[mathescape]{bst($G$)} restituisce l'albero binario di ricerca di $G$. $L($v$)$ restituisce la lista di adiacenza del vertice v.
 \begin{lstlisting}[mathescape]
-inserisci_amicizia($G=(V,E,$BST$)$, id$_1$, id$_2$, valore)
-  v$_1$ := ricerca_utente(BST, id$_1$)
-  v$_2$ := ricerca_utente(BST, id$_2$)
-  $E := E \cup \{(v_1, v_2, valore)\}$
-
+inserisci_amicizia($G=(V,E)$, id$_1$, id$_2$, valore)
+  v$_1$ := ricerca_utente( bst($G$), id$_1$ )
+  v$_2$ := ricerca_utente( bst($G$), id$_2$ )
+  list_append( $L($v$_1)$, v$_2$, valore )
+  list_append( $L($v$_2)$, v$_1$, valore )
 \end{lstlisting}
+\lstinline{ricerca_utente} costa $O(\log_{2}n)$. \lstinline{list_append} ha costo $O(1)$, è un inserimento in testa a una lista.
+\[
+  T_{inserisci\_amicizia} = 2 O(\log_{2}n) + 2O(1) = O(\log_{2}n)
+\]
 \subsection{Albero binario di ricerca Utenti}
-Un albero binario di ricerca degli utenti, ordinato in base all' identificativo.
+Ho implementato l'albero binario di ricerca per cercare un utente dato il suo identificativo. Altrimenti avrei dovuto cercare l'utente nella lista dei vertici, col costo di $O(n)$.
 \lstinputlisting[language=C, firstline=4, lastline=7]{../codice/binary_search_tree.h}
 
 \subsubsection{Ricerca utente}
@@ -123,7 +125,9 @@ Tuttavia, nel caso peggiore, cioè se gli utenti sono inseriti in ordine crescent
 Nell'ambito del progetto questa procedura è eseguita solo se l'utente non è gia presente. %Definisco \lstinline{&x} come l'indirizzo di memoria di \lstinline{x}.
 \begin{lstlisting}[mathescape]
 inserisci_nodo(root, elemento):
-  if id(elemento) < id(root)
+  if root = NULL
+    root = elemento
+  else if id(elemento) < id(root)
     if figlio_sinistro(root) = NULL
       aggiungi_sinistro(root, elemento)
     else
@@ -143,7 +147,44 @@ Per questa procedura valgono le stesse considerazoni della rocedura \lstinline{r
 \]
 
 \subsection{Gruppi di amici}
-\subsubsection{Dopo anno X}
+Dato un grafo degli utenti $G$, trovare i gruppi di amici.
+Dalle specifiche si evince che un gruppo di amici è una componente connesa di $G$. $L(v)$ restituisce la lista dei vertici adiacenti al vertice $v$. $M(v)$ restituisce \lstinline{true} o \lstinline{false} a seconda se il vertice è stato marcato o meno come visitato.
+\begin{lstlisting}[mathescape]
+componente = NULL  // lista concatenata vuota, globale
+
+componenti_connesse( $G=(V,E)$ )
+  componenti := NULL  // lista vuota
+  for each $v\in V$
+    $M(v)$ := false
+  for each $v \in V$
+    if $M(v)$ = false
+      list_append( componenti, profondità($v$) );
+  return componenti
+
+profondità($v$)
+  list_append( componente, $v$)
+  $M(v)$ := true
+  for each $w \in L(v)$
+    if $M(w)$ = false
+    profondità($w$)
+\end{lstlisting}
+\lstinline{list_append(lista, elemento)} inserisce in testa alla \lstinline{lista} l'\lstinline{elemento} in tempo $O(1)$.
+Si ricorda inoltre che il costo complessivo delle chiamate a \lstinline{profondità} è la somma delle lunghezze delle liste di adiacenza e che $\displaystyle \sum_{v \in V}{|L(v)|} = 2 \times |E| = O(|E|)$.
+\[
+  T_{componenti\_connesse} = O(|V|) + \sum_{v \in V}{T_{profondità}(v)} = O(|V|) + \sum_{v \in V}{|L(v)|} = O(|V| +|E|)
+\]
+
+Per trovare i gruppi di amici tale che ogni amicizia è stata instaurata dopo un certo anno, modifico la procedurà profondità nel modo seguente.
+\begin{lstlisting}[mathescape]
+profondità($v$)
+  list_append( componente, $v$, anno)
+  $M(v)$ := true
+  for each $w \in L(v)$
+    if $M(w)$ = false $\land$ val($v, w$) >= anno
+    profondità($w$)
+\end{lstlisting}
+Dove con \lstinline[mathescape]{val($v, w$)} si intende il valore associato all'arco $(v, w)$
+Questa condizione aggiuntiva non altera la stima della complessità  che rimane $O(|V| + |E|)$.
 
 %-------------------------------------
 \section{Conclusion}

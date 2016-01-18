@@ -4,6 +4,8 @@
 *.fls
 *.log
 *.pdf
+*.out
+*.toc
 *.gch
 *.o
 /codice/facebook

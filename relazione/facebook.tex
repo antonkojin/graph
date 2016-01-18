@@ -11,7 +11,7 @@
 \definecolor{mymauve}{rgb}{0.58,0,0.82}
 
 \lstset{
-  language=C,
+  %language=C,
   breaklines=true,
   basicstyle=\footnotesize\ttfamily,
   showstringspaces=false,
@@ -56,27 +56,92 @@ L'algoritmo per la ricerca di gruppo di amici è la ricerca di componenti conness
 \subsection{Grafo Utenti}
 Facebook è composto da utenti e la relazione di amicizia tra due utenti. Una naturale rappresentazione delle relazioni è il grafo. Quindi facebook verrà rappresentato da un grafo non orientato e la relazione di amicizia come l'arco tra due vertici del grafo.
 
-Ho bisogno di una struttura dati composta per l'arco, poichè voglio memorizzare anche l'anno in cui si crea l'amicizia.
-\lstinputlisting[firstline=18, lastline=22, caption=Arco]{../codice/graph.h}
+Rappresento gli archi con una lista di adiacenza, supponendo che il grafo sia poco connesso, visto che non tutti sono amici di tutti. Ho bisogno di una struttura dati composta per l'arco (\lstinline{edge}), poichè voglio memorizzare anche l'anno in cui si crea l'amicizia.
+\lstinputlisting[language=C, firstline=17, lastline=22]{../codice/graph.h}
 
-\lstinputlisting[firstline=12, lastline=16, caption=Vertice]{../codice/graph.h}
+\lstinputlisting[language=C, firstline=10, lastline=16]{../codice/graph.h}
 
-\lstinputlisting[firstline=6, lastline=10, caption=Grafo]{../codice/graph.h}
+\lstinputlisting[language=C, firstline=4, lastline=8]{../codice/graph.h}
 \lstinline{bst} è un albero binario di ricerca.
 
 \subsubsection{Inserimento Utente}
+Inserire un nuovo utente equivale a inserire un nuovo vertice nel grafo.
+\begin{lstlisting}[mathescape]
+aggiungi_vertice($G = (V,E)$, $v$):
+  se $v \notin V$ allora:
+    $V := V \cup \{v\}$
+    inserisci $v$ nell'albero binario di ricerca di $V$
+  altrimenti:
+    stampa errore
+  return $G$
+\end{lstlisting}
+Una stima della complesssità computazionale col criterio uniforme.
+Per verificare se $v \notin V$ faccio una ricerca nell'albero, ci si impiega $O(\log_{2}n)$ nel caso medio, dove $n$ è il numero di vertici nel grafo.
+Il tempo per aggiungere $v$ all'insieme dei vertici $V$ è costante, si tratta di appenderlo in testa alla lista dei gertici di $G$
+Il tempo per inserire $v$ nell'albero di ricerca è anche lui logarimico.
+\[
+T_{aggiungi\_vertice} = O(\log_{2}n) + O(1) + O(\log_{2}n) = O(\log_{2}n)
+\]
 
+\subsubsection{Inserimento amicizia}
+La seguente procedura ha come argomenti un grafo $G$ con il suo \lstinline{BST}, gli identificativi di due utenti \lstinline{id_u1} e \lstinline{id_u2} e il \lstinline{valore} da assegnare all'arco che colleghera i due vertici relativi ai due utenti.
+\begin{lstlisting}[mathescape]
+inserisci_amicizia($G=(V,E,$BST$)$, id$_1$, id$_2$, valore)
+  v$_1$ := ricerca_utente(BST, id$_1$)
+  v$_2$ := ricerca_utente(BST, id$_2$)
+  $E := E \cup \{(v_1, v_2, valore)\}$
+
+\end{lstlisting}
 \subsection{Albero binario di ricerca Utenti}
 Un albero binario di ricerca degli utenti, ordinato in base all' identificativo.
+\lstinputlisting[language=C, firstline=4, lastline=7]{../codice/binary_search_tree.h}
 
 \subsubsection{Ricerca utente}
-\begin{lstlisting}[caption=Code]
-#include <stdio.h>
-int main(void){
- // cose
-}
+L'operazione di ricerca di un utente si traduce in una ricerca del suo identificativo nell'albero binario di ricerca (d'ora in poi \lstinline{BST}).
+La funzione \lstinline{id} restituisce l'identificativo relativo all'utente rappresentato dal nodo. La funzione \lstinline{dato} restituisce il dato a cui punta il nodo, in questo caso l'utente.
+Banalmente le funzioni \lstinline{figlio_destro} e \lstinline{figlio_sinistro} restituiscono rispettivamente il figlio destro o sinistro del nodo.
+\begin{lstlisting}[mathescape]
+ricerca_utente(root, id_utente)
+  if root = NULL
+    return NULL
+  if id_utente = id(root)
+    return dato(root)
+  else if id_utente < id(root)
+    return ricerca_utente(figlio_sinistro(root), id_utente)
+  else
+    return ricerca_utente(figlio_destro(root), id_utente)
 \end{lstlisting}
-\subsubsection{Inserimento amicizia}
+Questa procedura ricorsiva trova un utente in tempo $O(h)$ dove $h = \log_{2}n$ è l'altezza dell'albero, se supponiamo che l'albero sia bilanciato, cioè gli utenti inseriti in ordine sparso.
+Tuttavia, nel caso peggiore, cioè se gli utenti sono inseriti in ordine crescente o decrescente di identificativo, l'albero degenera in una lista concatenata, e quindi la ricerca impiega $O(|V|)$.
+\[
+  T_{ricerca\_utente}^{medio}(n) = O(\log_{2}n)
+\]
+\[
+  T_{ricerca\_utente}^{peggiore}(n) = O(n)
+\]
+\subsubsection{Inserimento utente nell'albero}
+Nell'ambito del progetto questa procedura è eseguita solo se l'utente non è gia presente. %Definisco \lstinline{&x} come l'indirizzo di memoria di \lstinline{x}.
+\begin{lstlisting}[mathescape]
+inserisci_nodo(root, elemento):
+  if id(elemento) < id(root)
+    if figlio_sinistro(root) = NULL
+      aggiungi_sinistro(root, elemento)
+    else
+      inserisci_nodo( figlio_sinistro(root), elemento )
+  else
+    if figlio_destro(root) = NULL
+      aggiungi_destro(root, elemento)
+    else
+      inserisci_nodo( figlio_destro(root), elemento )
+\end{lstlisting}
+Per questa procedura valgono le stesse considerazoni della rocedura \lstinline{ricerca_utente} presentata sopra.
+\[
+  T_{inserisci\_nodo}^{medio}(n) = O(\log_{2}n)
+\]
+\[
+  T_{inserisci\_nodo}^{peggiore}(n) = O(n)
+\]
+
 \subsection{Gruppi di amici}
 \subsubsection{Dopo anno X}
 

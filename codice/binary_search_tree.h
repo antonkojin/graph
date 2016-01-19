@@ -6,7 +6,7 @@ struct bst_node{
   struct bst_node *left, *right; // puntatori ai figli
 };
 
-
+struct bst_node *bst_node_create(struct vertex *v);
 struct vertex *bst_search(struct bst_node *bst, int id);
 struct bst_node *bst_insert(struct bst_node *root, struct vertex *v);
 

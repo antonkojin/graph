@@ -24,36 +24,31 @@ struct vertex* bst_search(struct bst_node *bst, int id){
 }
 
 struct bst_node *bst_insert(struct bst_node *root, struct vertex *v){
-  //TODO maybe create_node function
-  fprintf(stderr, "DEBUG: bst_insert: start\n");
-  struct bst_node *new_node;
+  // fprintf(stderr, "DEBUG: bst_insert: start\n");
   if(!root){
-    new_node = (struct bst_node*)malloc_check( sizeof(struct bst_node) );
-    new_node->vertex = v;
-    new_node->left = NULL;
-    new_node->right = NULL;
-    root = new_node;
+    root = bst_node_create(v);
   }else if(v->user->id > root->vertex->user->id){
     if(root->right){
       bst_insert(root->right, v);
     }else{
-      new_node = (struct bst_node*)malloc_check( sizeof(struct bst_node) );
-      new_node->vertex = v;
-      new_node->left = NULL;
-      new_node->right = NULL;
-      root->right = new_node;
+      root->right = bst_node_create(v);
     }
   }else if(v->user->id < root->vertex->user->id){
     if(root->left){
       bst_insert(root->left, v);
     }else{
-      new_node = (struct bst_node*)malloc_check( sizeof(struct bst_node) );
-      new_node->vertex = v;
-      new_node->left = NULL;
-      new_node->right = NULL;
-      root->left = new_node;
+      root->left = bst_node_create(v);
     }
   }
-  fprintf(stderr, "DEBUG: bst_insert: end\n");
+  // fprintf(stderr, "DEBUG: bst_insert: end\n");
   return root;
+}
+
+struct bst_node *bst_node_create(struct vertex *v){
+  struct bst_node *new_node;
+  new_node = (struct bst_node*)malloc_check( sizeof(struct bst_node) );
+  new_node->left = NULL;
+  new_node->right = NULL;
+  new_node->vertex = v;
+  return new_node;
 }

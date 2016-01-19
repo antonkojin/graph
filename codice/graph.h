@@ -1,6 +1,8 @@
 #ifndef GRAPH_H
 #define GRAPH_H
 
+typedef enum{false, true} bool;
+
 struct graph{
   int nv, ne; // numero vertici e numero archi
   struct vertex *vertexes; // lista di vertici
@@ -8,7 +10,7 @@ struct graph{
 };
 
 struct vertex{
-  int visited; //TODO maybe a Bool type?
+  bool visited; // per la visita
   struct user *user; // puntatore al dato
   struct edge *edge; // lista di adiacenza
   struct vertex *next; // prossimo nella lista di vertici

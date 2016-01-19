@@ -1,11 +1,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "list.h"
+#include "malloc_check.h"
 
 struct list_node* list_append(struct list_node *list, void *item){
   struct list_node* new_node;
   if(item){
-    new_node = (struct list_node*)malloc( sizeof(struct list_node) );
+    new_node = (struct list_node*)malloc_check( sizeof(struct list_node) );
     if(!new_node){
       fprintf(stderr, "OUT OF MEMORY ERROR");
       exit(EXIT_FAILURE);

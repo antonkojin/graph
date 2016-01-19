@@ -20,7 +20,23 @@ void graph_destroy(struct graph *g){
   /*
     Libera la memoria del grafo g. Chiama bst_destroy di binary_search_tree.c
   */
-  //TODO
+  struct vertex *v_next, *v = g->vertexes;
+  struct edge *e, *e_next;
+  // fprintf(stderr, "DEGUB: graph_destroy: start\n");
+  while(v){
+    e = v->edge;
+    while(e){
+      e_next = e->next;
+      free(e);
+      e = e_next;
+    }
+    v_next = v->next;
+    free(v);
+    v = v_next;
+  }
+  bst_destroy(g->bst);
+  free(g);
+  // fprintf(stderr, "DEGUB: graph_destroy: end\n");
 }
 
 struct vertex* insert_vertex(struct graph* g, struct user* user){

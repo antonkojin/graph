@@ -51,3 +51,13 @@ struct bst_node *bst_node_create(struct vertex *v){
   new_node->vertex = v;
   return new_node;
 }
+
+void bst_destroy(struct bst_node *root){
+  // fprintf(stderr, "DEGUB: bst_destroy: start\n");
+  if(root){
+    bst_destroy(root->left);
+    bst_destroy(root->right);
+    free(root);
+  }
+  // fprintf(stderr, "DEGUB: bst_destroy: end\n");
+}

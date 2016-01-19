@@ -39,6 +39,7 @@ int main(void){
       case 9: clean(users); return 0;
     }
   }
+  return -1;
 }
 
 void inserisci_utenti(struct graph *g){
@@ -146,5 +147,5 @@ void gruppi(struct graph *g, int year){
 }
 
 void clean(struct graph *g){
-
+  graph_destroy(g);
 }

@@ -19,14 +19,15 @@ struct list_node* list_append(struct list_node *list, void *item){
   return new_node;
 }
 
-struct list_node* list_merge(struct list_node* list1, struct list_node *list2){
-  struct list_node *node;
-  if(!list1){
-    list1 = list2;
-  }else{
-    node = list1;
-    while(node->next) node = node->next;
-    node->next = list2;
-  }
-  return list1;
-}
+//TODO cancella
+// struct list_node* list_merge(struct list_node* list1, struct list_node *list2){
+//   struct list_node *node;
+//   if(!list1){
+//     list1 = list2;
+//   }else{
+//     node = list1;
+//     while(node->next) node = node->next;
+//     node->next = list2;
+//   }
+//   return list1;
+// }

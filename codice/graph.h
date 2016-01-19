@@ -1,6 +1,12 @@
 #ifndef GRAPH_H
 #define GRAPH_H
 
+struct user{
+  char* nome;
+  char* cognome;
+  int id;
+};
+
 typedef enum{false, true} bool;
 
 struct graph{

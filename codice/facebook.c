@@ -1,9 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "facebook.h"
 #include "graph.h"
-#include "user.h"
+#include "facebook.h"
 #include "binary_search_tree.h"
 #include "list.h"
 #include "malloc_check.h"
@@ -20,6 +19,10 @@
 "inserisci il numero dell'operazione: "
 
 int main(void){
+  /*
+    Processa l'inserimento iniziale di n utenti, n letto in input.
+    Stampa il menù e esegue la funzione desiderata.
+  */
   struct graph *users = graph_new();
   int op;
   inserisci_utenti(users);
@@ -40,8 +43,8 @@ int main(void){
 
 void inserisci_utenti(struct graph *g){
   /*
-  input n: numero utenti da inserire
-  inserisce n utenti chiedendo nome, cognime, id di ciascuno
+  Legge in input n, numero utenti che si vuole inserire.
+  Inserisce n utenti chiedendo nome, cognome, id di ciascuno
   */
   int n, i;
   printf("numero utenti: ");
@@ -53,14 +56,12 @@ void inserisci_utenti(struct graph *g){
 
 void inserisci_utente(struct graph *g){
   /*
-  input nome, cognime, id.
-  se presente stampa "Inserimento fallito, l'identificativo è gia presente"
-  altrimenti inseriscilo
+    Legge in input nome, cognime, id e chiama insert_vertex in graph.c.
   */
   int id;
   char *nome, *cognome, string_buffer[STRING_BUFFER_MAX] = {0};
   struct user *u;
-  fprintf(stderr, "DEBUG: inserisci_utente: start\n");
+  // fprintf(stderr, "DEBUG: inserisci_utente: start\n");
   printf("nome: ");
   scanf(" %s", string_buffer);
   nome = (char*)calloc_check( strlen(string_buffer) + 1, sizeof(char) );
@@ -76,18 +77,18 @@ void inserisci_utente(struct graph *g){
   u->cognome = cognome;
   u->id = id;
   insert_vertex(g, u);
-  fprintf(stderr, "DEBUG: inserisci_utente: end\n");
+  // fprintf(stderr, "DEBUG: inserisci_utente: end\n");
 }
 
 void cerca_utente(struct graph *g){
   /*
-  input id
-  se presente stampa nome, cognome, identificativo
+  Legge in input id, chiama bst_search di graph.c.
+  Se trova utente stampa nome, cognome, identificativo
   altriment stampa "Utente non trovato"
   */
   struct user *u;
   int id;
-  fprintf(stderr, "DEBUG: cerca_utente: start\n");
+  // fprintf(stderr, "DEBUG: cerca_utente: start\n");
   printf("id: ");
   scanf("%d", &id);
   u = bst_search(g->bst, id)->user;
@@ -96,17 +97,16 @@ void cerca_utente(struct graph *g){
   }else{
     printf("Utente non trovato");
   }
-  fprintf(stderr, "DEBUG: cerca_utente: end\n");
+  // fprintf(stderr, "DEBUG: cerca_utente: end\n");
 }
 
 void inserisci_amicizia(struct graph *g){
   /*
-  input identificativi di due utenti e anno creazione amicizia
-  se presenti inserisci amicizia tra i due
-  altrimenti stampa "Utente X non presente" oppure "Utenti X, Y non presenti"
+  Input identificativi di due utenti e anno creazione amicizia.
+  chiama graph_insert_edge di graph.c
   */
   int id1, id2, anno;
-  fprintf(stderr, "DEBUG: inserisci_amicizia: start\n");
+  // fprintf(stderr, "DEBUG: inserisci_amicizia: start\n");
   printf("id utente: ");
   scanf("%d", &id1);
   printf("id altro utente: ");
@@ -118,12 +118,12 @@ void inserisci_amicizia(struct graph *g){
   printf("anno: ");
   scanf("%d", &anno);
   graph_insert_edge(g, id1, id2, anno);
-  fprintf(stderr, "DEBUG: inserisci_amicizia: end\n");
+  // fprintf(stderr, "DEBUG: inserisci_amicizia: end\n");
 }
 
 void gruppi(struct graph *g, int year){
   /*
-  stampa gruppi di utenti nel seguente formato
+  Stampa i gruppi di amici nel seguente formato
   gruppo_i
   nome_k cognome_k id_k
   */

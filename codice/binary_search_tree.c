@@ -1,14 +1,13 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "binary_search_tree.h"
-#include "user.h"
 #include "graph.h"
 #include "malloc_check.h"
 
 struct vertex* bst_search(struct bst_node *bst, int id){
   int cmp;
   struct vertex *found = NULL;
-  fprintf(stderr, "DEBUG: bst_search: start\n");
+  // fprintf(stderr, "DEBUG: bst_search: start\n");
   if(bst){
     cmp = bst->vertex->user->id - id;
     if(cmp == 0){
@@ -19,7 +18,7 @@ struct vertex* bst_search(struct bst_node *bst, int id){
       found = bst_search(bst->right, id);
     }
   }
-  fprintf(stderr, "DEBUG: bst_search: end\n");
+  // fprintf(stderr, "DEBUG: bst_search: end\n");
   return found;
 }
 

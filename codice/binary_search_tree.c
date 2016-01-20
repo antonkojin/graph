@@ -5,6 +5,11 @@
 #include "malloc_check.h"
 
 struct vertex* bst_search(struct bst_node *bst, int id){
+  /*
+    Dato l'identificativo di un utente e l'albero binario di ricerca,
+    cerca l'utente nell'albero e restituisce il vertice del
+    grafo corrispondente.
+  */
   int cmp;
   struct vertex *found = NULL;
   // fprintf(stderr, "DEBUG: bst_search: start\n");
@@ -23,6 +28,11 @@ struct vertex* bst_search(struct bst_node *bst, int id){
 }
 
 struct bst_node *bst_insert(struct bst_node *root, struct vertex *v){
+  /*
+    Dato un albero binario di ricerca e un vertice v del grafo,
+    inserisce il vertice v nell'albero.
+    Si suppone che lo stesso vertice non sia già presente nell'albero.
+  */
   // fprintf(stderr, "DEBUG: bst_insert: start\n");
   if(!root){
     root = bst_node_create(v);
@@ -44,6 +54,10 @@ struct bst_node *bst_insert(struct bst_node *root, struct vertex *v){
 }
 
 struct bst_node *bst_node_create(struct vertex *v){
+  /*
+    Crea e restituisce un nuovo nodo per l'albero, rappresentante il
+    vertice v.
+  */
   struct bst_node *new_node;
   new_node = (struct bst_node*)malloc_check( sizeof(struct bst_node) );
   new_node->left = NULL;
@@ -53,6 +67,9 @@ struct bst_node *bst_node_create(struct vertex *v){
 }
 
 void bst_destroy(struct bst_node *root){
+  /*
+    Dealloca la struttura albero.
+  */
   // fprintf(stderr, "DEGUB: bst_destroy: start\n");
   if(root){
     bst_destroy(root->left);

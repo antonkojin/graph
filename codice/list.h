@@ -8,7 +8,4 @@ struct list_node{
 
 struct list_node* list_append(struct list_node* list, void* item);
 
-//TODO cancella
-// struct list_node* list_merge(struct list_node* list1, struct list_node *list2);
-
 #endif

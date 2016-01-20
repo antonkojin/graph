@@ -1,3 +1,4 @@
+/* Anton Kozhin 830515 */
 #ifndef GRAPH_H
 #define GRAPH_H
 

@@ -1,3 +1,4 @@
+/* Anton Kozhin 830515 */
 #ifndef LIST_H
 #define LIST_H
 

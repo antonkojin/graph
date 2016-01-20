@@ -1,3 +1,4 @@
+/* Anton Kozhin 830515 */
 #include <stdlib.h>
 #include <stdio.h>
 #include "list.h"
